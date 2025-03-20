@@ -74,7 +74,7 @@ def check_new_transactions():
     
     return None
 
-def process_transaction():
+def process_transactions():
     """
     Process the new transaction and send an email if the transaction is new.
     """
@@ -98,4 +98,4 @@ def process_transaction():
         time.sleep(20)
 
 if __name__ == "__main__":
-    process_transaction()
+    process_transactions()
