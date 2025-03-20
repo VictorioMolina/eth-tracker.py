@@ -80,21 +80,35 @@ def process_transactions():
     """
     last_tx_hash = None
     is_first_tx = True
-    
+
     while True:
+        print("[INFO] Analyzing transactions...")
+
         result = check_new_transactions()
-        
+
         if result:
+            tx_hash = result['hash']
+            # If it's the first transaction, just print and skip sending email
             if is_first_tx:
                 is_first_tx = False
-                last_tx_hash = result['hash']
-                print("🔰 First transaction detected. No email will be sent.")
-            
-            elif result['hash'] != last_tx_hash:
-                print("⚠️ New transfer detected. Sending email...")
+                last_tx_hash = tx_hash
+                print("[INFO] First transaction detected. No email will be sent.")
+
+            # If a new transaction is detected, send an email and update the hash
+            elif tx_hash != last_tx_hash:
+                print(f"[ALERT] New transfer detected! Sending email notification...")
                 send_email(result)
-                last_tx_hash = result['hash']
-        
+                last_tx_hash = tx_hash
+                print(f"[INFO] Email sent for transaction: {tx_hash}")
+
+            else:
+                print(f"[INFO] No new transaction detected. Latest transaction is still: {last_tx_hash}")
+
+        else:
+            print("[INFO] No transaction data received or an error occurred.")
+
+        # Add a small delay to avoid spamming the API with requests
+        print("[INFO] Waiting for the next check...\n")
         time.sleep(20)
 
 if __name__ == "__main__":
